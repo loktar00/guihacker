@@ -1,0 +1,27 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Source Code Pro'), local('SourceCodePro-Regular'), url(http://themes.googleusercontent.com/static/fonts/sourcecodepro/v4/mrl8jkM18OlOQN8JLgasDxM0YzuT7MdOe03otPbuUS0.woff) format('woff');
+}
+
+body {
+    font-family: 'Source Code Pro';
+    background:#000;
+    color: #00FF00;
+    margin:0;
+}
+canvas {
+    position:absolute;
+    top:0;
+    left:0;
+}
+.bars-and-stuff{
+    left:66.6%;
+}
+
+.output-console {
+    position:fixed;
+    overflow:hidden;
+}
+p{margin:0}
