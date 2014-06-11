@@ -1,46 +1,33 @@
-var canvas = document.querySelector(".hacker-3d-shiz"),
-    ctx = canvas.getContext("2d"),
-    canvasBars = document.querySelector(".bars-and-stuff"),
-    ctxBars = canvasBars.getContext("2d"),
-    outputConsole = document.querySelector(".output-console");
-
-canvas.width = (window.innerWidth/3)*2;
-canvas.height = window.innerHeight / 3;
-
-canvasBars.width = window.innerWidth/3;
-canvasBars.height = canvas.height;
-
-outputConsole.style.height = (window.innerHeight / 3) * 2 + 'px';
-outputConsole.style.top = window.innerHeight / 3 + 'px';
-
-
 /* Graphics stuff */
 function Square(z) {
-    this.width = canvas.width/2;
-    this.height = canvas.height;
+    this.width = settings.canvas.width/2;
+    this.height = settings.canvas.height;
     z = z || 0;
 
+    var canvas = settings.canvas;
+
     this.points = [
-    new Point({
-        x: (canvas.width / 2) - this.width,
-        y: (canvas.height / 2) - this.height,
-        z: z
-    }),
-    new Point({
-        x: (canvas.width / 2) + this.width,
-        y: (canvas.height / 2) - this.height,
-        z: z
-    }),
-    new Point({
-        x: (canvas.width / 2) + this.width,
-        y: (canvas.height / 2) + this.height,
-        z: z
-    }),
-    new Point({
-        x: (canvas.width / 2) - this.width,
-        y: (canvas.height / 2) + this.height,
-        z: z
-    })];
+        new Point({
+            x: (canvas.width / 2) - this.width,
+            y: (canvas.height / 2) - this.height,
+            z: z,
+        }),
+        new Point({
+            x: (canvas.width / 2) + this.width,
+            y: (canvas.height / 2) - this.height,
+            z: z
+        }),
+        new Point({
+            x: (canvas.width / 2) + this.width,
+            y: (canvas.height / 2) + this.height,
+            z: z
+        }),
+        new Point( {
+            x: (canvas.width / 2) - this.width,
+            y: (canvas.height / 2) + this.height,
+            z: z
+        })
+    ];
     this.dist = 0;
 }
 
@@ -56,24 +43,24 @@ Square.prototype.update = function () {
 };
 
 Square.prototype.render = function () {
-    ctx.beginPath();
-    ctx.moveTo(this.points[0].xPos, this.points[0].yPos);
+    settings.ctx.beginPath();
+    settings.ctx.moveTo(this.points[0].xPos, this.points[0].yPos);
+
     for (var p = 1; p < this.points.length; p++) {
-        if (this.points[p].z > -(focal - 50)) {
-            ctx.lineTo(this.points[p].xPos, this.points[p].yPos);
+        if (this.points[p].z > -(settings.focal - 50)) {
+            settings.ctx.lineTo(this.points[p].xPos, this.points[p].yPos);
         }
     }
 
-    ctx.closePath();
-    ctx.stroke();
+    settings.ctx.closePath();
+    settings.ctx.stroke();
 
     this.dist = this.points[this.points.length - 1].z;
-
 };
 
 function Point(pos) {
-    this.x = pos.x - canvas.width / 2 || 0;
-    this.y = pos.y - canvas.height / 2 || 0;
+    this.x = pos.x - settings.canvas.width / 2 || 0;
+    this.y = pos.y - settings.canvas.height / 2 || 0;
     this.z = pos.z || 0;
 
     this.cX = 0;
@@ -82,6 +69,7 @@ function Point(pos) {
 
     this.xPos = 0;
     this.yPos = 0;
+
     this.map2D();
 }
 
@@ -96,30 +84,26 @@ Point.prototype.rotateZ = function (angleZ) {
 };
 
 Point.prototype.map2D = function () {
-    var scaleX = focal / (focal + this.z + this.cZ),
-        scaleY = focal / (focal + this.z + this.cZ);
+    var scaleX = settings.focal / (settings.focal + this.z + this.cZ),
+        scaleY = settings.focal / (settings.focal + this.z + this.cZ);
 
-    this.xPos = vpx + (this.cX + this.x) * scaleX;
-    this.yPos = vpy + (this.cY + this.y) * scaleY;
+    this.xPos = settings.vpx + (this.cX + this.x) * scaleX;
+    this.yPos = settings.vpy + (this.cY + this.y) * scaleY;
 };
 
-// Init graphics stuff
-var squares = [],
-    focal = canvas.width / 2,
-    vpx = canvas.width / 2,
-    vpy = canvas.height / 2,
-    barVals = [],
-    sineVal = 0;
+// ** Main function **//
+function GuiHacker(){
+    this.squares = [];
 
-for (var i = 0; i < 15; i++) {
-    squares.push(new Square(-300 + (i * 200)));
-}
+    this.barVals = [];
+    this.sineVal = [];
 
-//ctx.lineWidth = 2;
-ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
+    for (var i = 0; i < 15; i++) {
+        this.squares.push(new Square(-300 + (i * 200)));
+    }
 
-/* fake console stuff */
-    var commandStart    = [
+    // Console stuff
+    this.commandStart    = [
                             'Performing DNS Lookups for ',
                             'Searching ',
                             'Analyzing ',
@@ -131,8 +115,8 @@ ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
                             'Entering Location ',
                             'Compilation Started of ',
                             'Downloading '
-                         ],
-    commandParts        = [
+                         ];
+    this.commandParts   = [
                             'Data Structure',
                             'http://wwjd.com?au&2',
                             'Texture',
@@ -140,8 +124,8 @@ ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
                             ' .... Searching ... ',
                             'http://zanb.se/?23&88&far=2',
                             'http://ab.ret45-33/?timing=1ww'
-                            ],
-    commandResponses    = [
+                            ];
+    this.responses      = [
                             'Authorizing ',
                             'Authorized...',
                             'Access Granted..',
@@ -153,21 +137,31 @@ ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
                             'Waiting for response...',
                             '....Searching...',
                             'Calculating Space Requirements '
-                            ],
-    isProcessing = false,
-    processTime = 0,
-    lastProcess = 0;
+                            ];
+    this.isProcessing = false;
+    this.processTime = 0;
+    this.lastProcess = 0;
 
+    this.render();
+    this.consoleOutput();
+}
 
-function render() {
+GuiHacker.prototype.render = function(){
+    var ctx = settings.ctx,
+        canvas = settings.canvas,
+        ctxBars = settings.ctxBars,
+        canvasBars = settings.canvasBars;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    squares.sort(function (a, b) {
+    this.squares.sort(function (a, b) {
         return b.dist - a.dist;
     });
-    for (var i = 0, len = squares.length; i < len; i++) {
-        squares[i].update();
-        squares[i].render();
+
+    for (var i = 0, len = this.squares.length; i < len; i++) {
+        var square = this.squares[i];
+        square.update();
+        square.render();
     }
 
     ctxBars.clearRect(0, 0, canvasBars.width, canvasBars.height);
@@ -187,48 +181,51 @@ function render() {
     ctxBars.stroke();
 
     for(i = 0; i < canvasBars.width; i+=20){
-        if(!barVals[i]){
-            barVals[i] = {
+        if(!this.barVals[i]){
+            this.barVals[i] = {
                 val : Math.random()*(canvasBars.height/2),
                 freq : 0.1,
                 sineVal : Math.random()*100
             };
         }
 
-        barVals[i].sineVal+=barVals[i].freq;
-        barVals[i].val+=Math.sin(barVals[i].sineVal*Math.PI/2)*5;
-        ctxBars.fillRect(i+5,canvasBars.height,15,-barVals[i].val);
+        var barVal = this.barVals[i];
+        barVal.sineVal+=barVal.freq;
+        barVal.val+=Math.sin(barVal.sineVal*Math.PI/2)*5;
+        ctxBars.fillRect(i+5,canvasBars.height,15,-barVal.val);
     }
 
-    requestAnimationFrame(render);
-}
+    var self = this;
+    requestAnimationFrame(function(){self.render();});
+};
 
-function consoleOutput(){
+GuiHacker.prototype.consoleOutput = function(){
     var textEl = document.createElement('p');
 
-    if(isProcessing){
+    if(this.isProcessing){
         textEl = document.createElement('span');
         textEl.textContent += Math.random() + " ";
-        if(Date.now() > lastProcess + processTime){
-            isProcessing = false;
+        if(Date.now() > this.lastProcess + this.processTime){
+            this.isProcessing = false;
         }
     }else{
         var commandType = ~~(Math.random()*4);
         switch(commandType){
             case 0:
-                textEl.textContent = commandStart[~~(Math.random()*commandStart.length)] + commandParts[~~(Math.random()*commandParts.length)];
+                textEl.textContent = this.commandStart[~~(Math.random()*this.commandStart.length)] + this.commandParts[~~(Math.random()*this.commandParts.length)];
                 break;
             case 3:
-                isProcessing = true;
-                processTime = ~~(Math.random()*5000);
-                lastProcess = Date.now();
+                this.isProcessing = true;
+                this.processTime = ~~(Math.random()*5000);
+                this.lastProcess = Date.now();
                 break;
             default:
-                 textEl.textContent = commandResponses[~~(Math.random()*commandResponses.length)];
+                 textEl.textContent = this.responses[~~(Math.random()*this.responses.length)];
             break;
         }
     }
 
+    var outputConsole = settings.outputConsole;
     outputConsole.scrollTop = outputConsole.scrollHeight;
     outputConsole.appendChild(textEl);
 
@@ -239,25 +236,61 @@ function consoleOutput(){
         }
     }
 
-    setTimeout(consoleOutput, ~~(Math.random()*200));
+    var self = this;
+    setTimeout(function(){self.consoleOutput();}, ~~(Math.random()*200));
+};
+
+
+// Settings
+var settings = {
+       canvas           : document.querySelector(".hacker-3d-shiz"),
+       ctx              : document.querySelector(".hacker-3d-shiz").getContext("2d"),
+       canvasBars       : document.querySelector(".bars-and-stuff"),
+       ctxBars          : document.querySelector(".bars-and-stuff").getContext("2d"),
+       outputConsole    : document.querySelector(".output-console"),
+       vpx              : 0,
+       vpy              : 0,
+       focal            : 0,
+       color            : "#00FF00",
+       title            : "Gui Hacker",
+       gui              : true
+    },
+    hash = document.location.hash.substring(1),
+    userSettings = {};
+
+if (hash){
+    userSettings = JSON.parse(hash);
+    document.title = userSettings.title || settings.title;
+    settings.color = userSettings.color || settings.color;
+
+    if(typeof userSettings.gui !== undefined){
+        settings.gui = userSettings.gui;
+    }
 }
 
-render();
-consoleOutput();
+var adjustCanvas = function(){
+    if(settings.gui){
+        settings.canvas.width = (window.innerWidth/3)*2;
+        settings.canvas.height = window.innerHeight / 3;
+
+        settings.canvasBars.width = window.innerWidth/3;
+        settings.canvasBars.height = settings.canvas.height;
+
+        settings.outputConsole.style.height = (window.innerHeight / 3) * 2 + 'px';
+        settings.outputConsole.style.top = window.innerHeight / 3 + 'px';
+
+        settings.focal = settings.canvas.width / 2;
+        settings.vpx = settings.canvas.width / 2;
+        settings.vpy = settings.canvas.height / 2;
+
+        settings.ctx.strokeStyle = settings.ctxBars.strokeStyle = settings.ctxBars.fillStyle = settings.color;
+    }else{
+        document.querySelector(".hacker-3d-shiz").style.display = "none";
+        document.querySelector(".bars-and-stuff").style.display = "none";
+    }
+        document.body.style.color = settings.color;
+    }(),
+    guiHacker = new GuiHacker(settings);
 
 
-window.addEventListener('resize', function(){
-      canvas.width = (window.innerWidth/3)*2;
-      canvas.height = window.innerHeight / 3;
-
-      canvasBars.width = window.innerWidth/3;
-      canvasBars.height = canvas.height;
-
-      outputConsole.style.height = (window.innerHeight / 3) * 2 + 'px';
-      outputConsole.style.top = window.innerHeight / 3 + 'px';
-
-      focal = canvas.width / 2;
-      vpx = canvas.width / 2;
-      vpy = canvas.height / 2;
-      ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
-});
+window.addEventListener('resize', adjustCanvas);
