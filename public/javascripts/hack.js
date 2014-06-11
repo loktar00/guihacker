@@ -260,12 +260,15 @@ var settings = {
 
 if (hash){
     userSettings = JSON.parse(hash);
-    document.title = userSettings.title || settings.title;
-    settings.color = userSettings.color || settings.color;
+    if(userSettings && userSettings.title !== undefined){
+        document.title = userSettings.title;
+    }
 
-    if(typeof userSettings.gui !== undefined){
+    if(userSettings && userSettings.gui !== undefined){
         settings.gui = userSettings.gui;
     }
+
+    settings.color = userSettings.color || settings.color;
 }
 
 var adjustCanvas = function(){
