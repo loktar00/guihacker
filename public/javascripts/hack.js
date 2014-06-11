@@ -11,7 +11,7 @@ canvasBars.width = window.innerWidth/3;
 canvasBars.height = canvas.height;
 
 outputConsole.style.height = (window.innerHeight / 3) * 2 + 'px';
-outputConsole.style.top = window.innerHeight / 3 + 'px'
+outputConsole.style.top = window.innerHeight / 3 + 'px';
 
 
 /* Graphics stuff */
@@ -53,7 +53,7 @@ Square.prototype.update = function () {
         }
         this.points[p].map2D();
     }
-}
+};
 
 Square.prototype.render = function () {
     ctx.beginPath();
@@ -93,7 +93,7 @@ Point.prototype.rotateZ = function (angleZ) {
 
     this.x = x1;
     this.y = y1;
-}
+};
 
 Point.prototype.map2D = function () {
     var scaleX = focal / (focal + this.z + this.cZ),
@@ -119,36 +119,41 @@ for (var i = 0; i < 15; i++) {
 ctx.strokeStyle = ctxBars.strokeStyle = ctxBars.fillStyle = '#00FF00';
 
 /* fake console stuff */
-var commandStart = ['Performing DNS Lookups for',
-                'Searching ',
-                'Analyzing ',
-                'Estimating Approximate Location of ',
-                'Compressing ',
-                'Requesting Authorization From : ',
-                'wget -a -t ',
-                'tar -xzf ',
-                'Entering Location ',
-                'Compilation Started of ',
-                 'Downloading '],
-    commandParts = ['Data Structure',
-                    'http://wwjd.com?au&2',
-                    'Texture',
-                    'TPS Reports',
-                    ' .... Searching ... ',
-                    'http://zanb.se/?23&88&far=2',
-                    'http://ab.ret45-33/?timing=1ww'],
-    commandResponses = ['Authorizing ',
-                 'Authorized...',
-                 'Access Granted..',
-                 'Going Deeper....',
-                 'Compression Complete.',
-                 'Compilation of Data Structures Complete..',
-                 'Entering Security Console...',
-                 'Encryption Unsuccesful Attempting Retry...',
-                 'Waiting for response...',
-                 '....Searching...',
-                 'Calculating Space Requirements '
-                ],
+    var commandStart    = [
+                            'Performing DNS Lookups for ',
+                            'Searching ',
+                            'Analyzing ',
+                            'Estimating Approximate Location of ',
+                            'Compressing ',
+                            'Requesting Authorization From : ',
+                            'wget -a -t ',
+                            'tar -xzf ',
+                            'Entering Location ',
+                            'Compilation Started of ',
+                            'Downloading '
+                         ],
+    commandParts        = [
+                            'Data Structure',
+                            'http://wwjd.com?au&2',
+                            'Texture',
+                            'TPS Reports',
+                            ' .... Searching ... ',
+                            'http://zanb.se/?23&88&far=2',
+                            'http://ab.ret45-33/?timing=1ww'
+                            ],
+    commandResponses    = [
+                            'Authorizing ',
+                            'Authorized...',
+                            'Access Granted..',
+                            'Going Deeper....',
+                            'Compression Complete.',
+                            'Compilation of Data Structures Complete..',
+                            'Entering Security Console...',
+                            'Encryption Unsuccesful Attempting Retry...',
+                            'Waiting for response...',
+                            '....Searching...',
+                            'Calculating Space Requirements '
+                            ],
     isProcessing = false,
     processTime = 0,
     lastProcess = 0;
@@ -174,7 +179,7 @@ function render() {
     for(i = 0; i < canvasBars.width; i++){
         var ran = (Math.random()*20)-10;
         if(Math.random() > 0.98){
-             ran = (Math.random()*50)-25
+             ran = (Math.random()*50)-25;
         }
         ctxBars.lineTo(i, y + ran);
     }
@@ -217,6 +222,7 @@ function consoleOutput(){
                 isProcessing = true;
                 processTime = ~~(Math.random()*5000);
                 lastProcess = Date.now();
+                break;
             default:
                  textEl.textContent = commandResponses[~~(Math.random()*commandResponses.length)];
             break;
