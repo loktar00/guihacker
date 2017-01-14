@@ -255,7 +255,7 @@ var settings = {
        title            : "Gui Hacker",
        gui              : true
     },
-    hash = document.location.hash.substring(1),
+    hash = decodeURIComponent(document.location.hash.substring(1)),
     userSettings = {};
 
 if (hash){
