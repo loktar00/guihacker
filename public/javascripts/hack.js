@@ -1,3 +1,47 @@
+// Chooses a random element from an array
+function choose(arr) {
+    return arr[Math.floor(Math.random() * arr.length)]
+}
+
+String.prototype.capitalizeFirstLetter = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
+// A collection of jargon
+jargonWords = {
+   acronyms: 
+      ["TCP", "HTTP", "SDD", "RAM", "GB", "CSS", "SSL", "AGP", "SQL", "FTP", "PCI", "AI", "ADP",
+       "RSS", "XML", "EXE", "COM", "HDD", "THX", "SMTP", "SMS", "USB", "PNG", "PHP", "UDP", 
+       "TPS", "RX", "ASCII", "CD-ROM", "CGI", "CPU", "DDR", "DHCP", "BIOS", "IDE", "IP", "MAC", 
+       "MP3", "AAC", "PPPoE", "SSD", "SDRAM", "VGA", "XHTML", "Y2K", "GUI", "EPS"], 
+   adjectives:
+      ["auxiliary", "primary", "back-end", "digital", "open-source", "virtual", "cross-platform",
+       "redundant", "online", "haptic", "multi-byte", "bluetooth", "wireless", "1080p", "neural",
+       "optical", "solid state", "mobile", "unicode", "backup", "high speed", "56k", "analog", 
+       "fiber optic", "central", "visual", "ethernet", "Griswold"], 
+   nouns:
+      ["driver", "protocol", "bandwidth", "panel", "microchip", "program", "port", "card", 
+       "array", "interface", "system", "sensor", "firewall", "hard drive", "pixel", "alarm", 
+       "feed", "monitor", "application", "transmitter", "bus", "circuit", "capacitor", "matrix", 
+       "address", "form factor", "array", "mainframe", "processor", "antenna", "transistor", 
+       "virus", "malware", "spyware", "network", "internet", "field", "acutator", "tetryon",
+       "beacon", "resonator"], 
+   participles:
+      ["backing up", "bypassing", "hacking", "overriding", "compressing", "copying", "navigating", 
+       "indexing", "connecting", "generating", "quantifying", "calculating", "synthesizing", 
+       "inputting", "transmitting", "programming", "rebooting", "parsing", "shutting down", 
+       "injecting", "transcoding", "encoding", "attaching", "disconnecting", "networking",
+       "triaxilating", "multiplexing", "interplexing", "rewriting", "transducing",
+       "acutating", "polarising"
+]};
+
+// Generates a random piece of jargon
+function jargon() {
+    let raw = choose(jargonWords.participles) + " " + choose(jargonWords.adjectives) + " " +
+        choose(jargonWords.acronyms) + " " + choose(jargonWords.nouns);
+    return raw.capitalizeFirstLetter()
+}
+
 /* Graphics stuff */
 function Square(z) {
     this.width = settings.canvas.width/2;
@@ -103,28 +147,6 @@ function GuiHacker(){
     }
 
     // Console stuff
-    this.commandStart    = [
-                            'Performing DNS Lookups for ',
-                            'Searching ',
-                            'Analyzing ',
-                            'Estimating Approximate Location of ',
-                            'Compressing ',
-                            'Requesting Authorization From : ',
-                            'wget -a -t ',
-                            'tar -xzf ',
-                            'Entering Location ',
-                            'Compilation Started of ',
-                            'Downloading '
-                         ];
-    this.commandParts   = [
-                            'Data Structure',
-                            'http://wwjd.com?au&2',
-                            'Texture',
-                            'TPS Reports',
-                            ' .... Searching ... ',
-                            'http://zanb.se/?23&88&far=2',
-                            'http://ab.ret45-33/?timing=1ww'
-                            ];
     this.responses      = [
                             'Authorizing ',
                             'Authorized...',
@@ -199,12 +221,28 @@ GuiHacker.prototype.render = function(){
     requestAnimationFrame(function(){self.render();});
 };
 
+// Generates a random binary, hexadecimal or floating-point number (as a string)
+function scaryNum() {
+    let rand = Math.random()
+    let rand2 = Math.random()
+    
+    if (rand2 > 0.7) {
+        let bigNum = rand * 1000000000
+        return bigNum.toString(16).split('.')[0] // big hexadecimal
+    } else if (rand2 > 0.4) {
+        let longNum = rand * 100000000000
+        return longNum.toString(2).split('.')[0] // big binary
+    } else {
+        return rand.toString() // float
+    }
+}
+
 GuiHacker.prototype.consoleOutput = function(){
     var textEl = document.createElement('p');
 
     if(this.isProcessing){
         textEl = document.createElement('span');
-        textEl.textContent += Math.random() + " ";
+        textEl.textContent += scaryNum() + " ";
         if(Date.now() > this.lastProcess + this.processTime){
             this.isProcessing = false;
         }
@@ -212,7 +250,7 @@ GuiHacker.prototype.consoleOutput = function(){
         var commandType = ~~(Math.random()*4);
         switch(commandType){
             case 0:
-                textEl.textContent = this.commandStart[~~(Math.random()*this.commandStart.length)] + this.commandParts[~~(Math.random()*this.commandParts.length)];
+                textEl.textContent = jargon()
                 break;
             case 3:
                 this.isProcessing = true;
